@@ -12,7 +12,7 @@ namespace BOOM
 {
     partial class PlayersEvents : IEventHandlerPlayerDie, IEventHandlerSetRole, IEventHandlerThrowGrenade, IEventHandlerSetSCPConfig, IEventHandlerSetConfig,
         IEventHandlerCheckRoundEnd, IEventHandlerWaitingForPlayers, IEventHandlerRoundEnd, IEventHandlerElevatorUse,
-        IEventHandlerPlayerHurt
+        IEventHandlerPlayerHurt, IEventHandlerPlayerPickupItem
 
     {
         /////////////////////////////////////////////////////////////////Variables////////////////////////////////////////////////////////////////
@@ -24,12 +24,32 @@ namespace BOOM
             this.plugin = plugin;
         }        
       
-        int contador = 0; int Scientists = 0; int Dboys = 0;     
+        int contador = 0; int Scientists = 0; int Dboys = 0; int contadorpos = 0;     
         static string MVP = "nadie"; string mejor = "Nadie";
 
         public void OnPlayerDie(PlayerDeathEvent ev)
         {
-            Timing.Run(Respawn(ev.Player));
+            if (ev.Player.TeamRole.Role == Role.SCIENTIST)
+            {
+                Timing.Run(Respawn(ev.Player));
+            }
+            if((ev.Player.TeamRole.Role == Role.CLASSD)&&(contadorpos == 0))
+            {
+                Timing.Run(Respawn(ev.Player));
+                contadorpos = 1;
+            }
+            if ((ev.Player.TeamRole.Role == Role.CLASSD) && (contadorpos == 1))
+            {
+                Timing.Run(RespawnD1(ev.Player));
+                contadorpos = 2;
+            }
+            if ((ev.Player.TeamRole.Role == Role.CLASSD) && (contadorpos == 2))
+            {
+                Timing.Run(RespawnD2(ev.Player));
+                contadorpos = 0;
+            }
+
+
             ev.Killer.GiveItem(ItemType.FRAG_GRENADE);
             if (ev.DamageTypeVar == DamageType.FRAG)
             {
@@ -67,10 +87,29 @@ namespace BOOM
             player.SendConsoleMessage("Respawnearas en 5 segundos," + player.Name, "blue");
             
             yield return 5f;
-            player.ChangeRole(rolep);
-            
-
+            player.ChangeRole(rolep);          
         }
+   
+
+        public static IEnumerable<float> RespawnD1(Player player)
+        {
+            var rolep = player.TeamRole.Role;
+            player.SendConsoleMessage("Respawnearas en 5 segundos," + player.Name, "blue");
+
+            yield return 5f;
+            player.ChangeRole(rolep);
+            player.Teleport(PluginManager.Manager.Server.Map.GetSpawnPoints(Role.SCIENTIST).First());
+        }
+        public static IEnumerable<float> RespawnD2(Player player)
+        {
+            var rolep = player.TeamRole.Role;
+            player.SendConsoleMessage("Respawnearas en 5 segundos," + player.Name, "blue");
+
+            yield return 5f;
+            player.ChangeRole(rolep);
+            player.Teleport(PluginManager.Manager.Server.Map.GetSpawnPoints(Role.SCP_173).First());
+        }
+
         public static IEnumerable<float> Granada(Player player)
         {         
             yield return 5f;
@@ -188,6 +227,14 @@ namespace BOOM
                     Dboys = Dboys + 1;
                     ev.Attacker.Kill(DamageType.LURE);
                 }
+            }
+        }
+
+        public void OnPlayerPickupItem(PlayerPickupItemEvent ev)
+        {
+            if((ev.Item.ItemType == ItemType.COM15)|| (ev.Item.ItemType == ItemType.USP) || (ev.Item.ItemType == ItemType.P90) || (ev.Item.ItemType == ItemType.LOGICER) || (ev.Item.ItemType == ItemType.E11_STANDARD_RIFLE) || (ev.Item.ItemType == ItemType.MP4))
+            {
+                ev.ChangeTo = ItemType.FRAG_GRENADE;
             }
         }
     }
