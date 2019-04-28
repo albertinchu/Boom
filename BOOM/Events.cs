@@ -12,7 +12,7 @@ namespace BOOM
 {
     partial class PlayersEvents : IEventHandlerPlayerDie, IEventHandlerSetRole, IEventHandlerThrowGrenade, IEventHandlerSetSCPConfig, IEventHandlerSetConfig,
         IEventHandlerCheckRoundEnd, IEventHandlerWaitingForPlayers, IEventHandlerRoundEnd, IEventHandlerElevatorUse,
-        IEventHandlerPlayerPickupItem
+        IEventHandlerPlayerPickupItem, IEventHandlerPlayerHurt
 
     {
         /////////////////////////////////////////////////////////////////Variables////////////////////////////////////////////////////////////////
@@ -29,6 +29,7 @@ namespace BOOM
 
         public void OnPlayerDie(PlayerDeathEvent ev)
         {
+          
             if (ev.Player.TeamRole.Role == Role.SCIENTIST)
             {
                 Timing.Run(Respawn(ev.Player));
@@ -48,11 +49,9 @@ namespace BOOM
                 Timing.Run(RespawnD2(ev.Player));
                 contadorpos = 0;
             }
-
-
-            ev.Killer.GiveItem(ItemType.FRAG_GRENADE);
-            if(ev.DamageTypeVar == DamageType.FRAG)
-            {
+            if (ev.DamageTypeVar == DamageType.FRAG)
+            { PluginManager.Manager.Server.Map.Broadcast(10, "test 1", true); }
+                ev.Killer.GiveItem(ItemType.FRAG_GRENADE);              
                 Jugadores.Add(ev.Killer.SteamId,Jugadores[ev.Killer.SteamId]+ 1);
                 ev.Killer.GiveItem(ItemType.FRAG_GRENADE);
                 ev.Player.SendConsoleMessage("Has muerto, tu asesino fue:" + ev.Killer.Name, "green");
@@ -67,8 +66,10 @@ namespace BOOM
                     Scientists = Scientists + 1;
                     PluginManager.Manager.Server.Map.Broadcast(4, ev.Player.Name + "ha muerto", false);
                 }
-            }
+
+
         }
+        
 
         public void OnSetRole(PlayerSetRoleEvent ev)
         {
@@ -221,6 +222,11 @@ namespace BOOM
             {
                 ev.ChangeTo = ItemType.FRAG_GRENADE;
             }
+        }
+
+        public void OnPlayerHurt(PlayerHurtEvent ev)
+        {
+           if(ev.DamageType == DamageType.FRAG) { PluginManager.Manager.Server.Map.Broadcast(10, "test 1", true); }
         }
     }
 }
