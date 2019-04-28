@@ -1,0 +1,11 @@
+C:\Users\alber\Desktop\Plugins oficiales D\BOOM\BOOM\bin\Debug\BOOM.dll
+C:\Users\alber\Desktop\Plugins oficiales D\BOOM\BOOM\bin\Debug\BOOM.pdb
+C:\Users\alber\Desktop\Plugins oficiales D\BOOM\BOOM\bin\Debug\GamemodeManager.dll
+C:\Users\alber\Desktop\Plugins oficiales D\BOOM\BOOM\bin\Debug\Smod2.dll
+C:\Users\alber\Desktop\Plugins oficiales D\BOOM\BOOM\bin\Debug\UnityEngine.CoreModule.dll
+C:\Users\alber\Desktop\Plugins oficiales D\BOOM\BOOM\bin\Debug\UnityEngine.dll
+C:\Users\alber\Desktop\Plugins oficiales D\BOOM\BOOM\obj\Debug\BOOM.csprojAssemblyReference.cache
+C:\Users\alber\Desktop\Plugins oficiales D\BOOM\BOOM\obj\Debug\BOOM.csproj.CoreCompileInputs.cache
+C:\Users\alber\Desktop\Plugins oficiales D\BOOM\BOOM\obj\Debug\BOOM.csproj.CopyComplete
+C:\Users\alber\Desktop\Plugins oficiales D\BOOM\BOOM\obj\Debug\BOOM.dll
+C:\Users\alber\Desktop\Plugins oficiales D\BOOM\BOOM\obj\Debug\BOOM.pdb
