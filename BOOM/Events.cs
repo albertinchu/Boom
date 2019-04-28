@@ -12,7 +12,7 @@ namespace BOOM
 {
     partial class PlayersEvents : IEventHandlerPlayerDie, IEventHandlerSetRole, IEventHandlerThrowGrenade, IEventHandlerSetSCPConfig, IEventHandlerSetConfig,
         IEventHandlerCheckRoundEnd, IEventHandlerWaitingForPlayers, IEventHandlerRoundEnd, IEventHandlerElevatorUse,
-        IEventHandlerPlayerHurt, IEventHandlerPlayerPickupItem
+        IEventHandlerPlayerPickupItem
 
     {
         /////////////////////////////////////////////////////////////////Variables////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ namespace BOOM
 
 
             ev.Killer.GiveItem(ItemType.FRAG_GRENADE);
-            if (ev.DamageTypeVar == DamageType.FRAG)
+            if(ev.DamageTypeVar == DamageType.FRAG)
             {
                 Jugadores.Add(ev.Killer.SteamId,Jugadores[ev.Killer.SteamId]+ 1);
                 ev.Killer.GiveItem(ItemType.FRAG_GRENADE);
@@ -60,24 +60,27 @@ namespace BOOM
                 if ((ev.Player.TeamRole.Role == Role.SCIENTIST) && ((ev.Killer.TeamRole.Role == Role.SPECTATOR)||(ev.Killer.TeamRole.Team == Team.CLASSD)) && (ev.Killer.SteamId != ev.Player.SteamId))
                 {
                     Dboys = Dboys + 1;
+                    PluginManager.Manager.Server.Map.Broadcast(4, ev.Player.Name +"ha muerto", false);
                 }
                 if ((ev.Player.TeamRole.Role == Role.CLASSD) && ((ev.Killer.TeamRole.Team == Team.SCIENTIST)||(ev.Killer.TeamRole.Role == Role.SPECTATOR)) && (ev.Killer.SteamId != ev.Player.SteamId))
                 {
                     Scientists = Scientists + 1;
+                    PluginManager.Manager.Server.Map.Broadcast(4, ev.Player.Name + "ha muerto", false);
                 }
             }
         }
 
         public void OnSetRole(PlayerSetRoleEvent ev)
         {
-            if (contador == 0) {
+            if(contador == 0)
+            {
                 foreach (Player player in PluginManager.Manager.Server.GetPlayers())
                 {
                     Jugadores.Add(player.SteamId, 0);
                     contador = 1;
                 }
             }
-            if (ev.Player.TeamRole.Team != Team.SCP){ ev.Player.GiveItem(ItemType.FRAG_GRENADE); }
+            if(ev.Player.TeamRole.Team != Team.SCP){ ev.Player.GiveItem(ItemType.FRAG_GRENADE); }
         }
 
 
@@ -210,24 +213,6 @@ namespace BOOM
         public void OnElevatorUse(PlayerElevatorUseEvent ev)
         {
             ev.AllowUse = false;
-        }
-
-        public void OnPlayerHurt(PlayerHurtEvent ev)
-        {
-           
-            if ((ev.DamageType == DamageType.COM15)||(ev.DamageType != DamageType.USP)||(ev.DamageType == DamageType.P90)||(ev.DamageType == DamageType.LOGICER) || (ev.DamageType == DamageType.E11_STANDARD_RIFLE) || (ev.DamageType == DamageType.MP7))
-            {
-                if (ev.Attacker.TeamRole.Role == Role.CLASSD)
-                {
-                    Scientists = Scientists + 1;
-                    ev.Attacker.Kill(DamageType.LURE);
-                }
-                if (ev.Attacker.TeamRole.Role == Role.SCIENTIST)
-                {
-                    Dboys = Dboys + 1;
-                    ev.Attacker.Kill(DamageType.LURE);
-                }
-            }
         }
 
         public void OnPlayerPickupItem(PlayerPickupItemEvent ev)
